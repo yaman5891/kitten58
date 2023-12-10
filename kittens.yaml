@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  Kittens Carousel is a static website 
+  application deployed with Apache Web Server 
+  on AWS Elastic Compute Cloud (EC2) Instance 
+  using AWS Cloudformation Service.
+​
+Resources:
+  Safiye:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0230bd60aa48260c6
+      InstanceType: t2.micro
+      KeyName: firstkey
+      SecurityGroups:
+        - !Ref safiyesecgrp
+      Tags:
+        - Key: Name
+          Value: safiye
+​
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash          
+          yum update -y
+          yum install -y httpd
+          systemctl start httpd
+          systemctl enable httpd
+          yum install -y git
+          cd /var/www/html
+          wget https://raw.githubusercontent.com/safiyetkgz/Safiye-Tokgoz-s-Kittens-Carousel/main/static-web/index.html
+          wget https://raw.githubusercontent.com/safiyetkgz/Safiye-Tokgoz-s-Kittens-Carousel/main/static-web/cat0.jpg
+          wget https://raw.githubusercontent.com/safiyetkgz/Safiye-Tokgoz-s-Kittens-Carousel/main/static-web/cat1.jpg
+          wget https://raw.githubusercontent.com/safiyetkgz/Safiye-Tokgoz-s-Kittens-Carousel/main/static-web/cat2.jpg
+          chown -R apache:apache static-web
+​
+  safiyesecgrp:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allows only HTTP connection # Required
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
